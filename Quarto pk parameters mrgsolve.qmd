@@ -1,0 +1,52 @@
+---
+title: "Calculating pk parameters in MRGsolve"
+author: "Johannes Starp"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    html-math-method: katex
+    css: styles.css
+editor: visual
+bibliography: references.bib
+---
+
+# Introduction
+
+The aim of this project is to calculate pharmacokinetik (PK) parameters with the R package "MRGsolve". By adding code snippets to the model code as described in the MRGsolve blog [@baron2024].
+
+```{r}
+#| echo: false
+#| warning: false
+
+source("00_run_scripts.r")
+
+```
+
+# Methods
+
+# Results
+
+## Patients
+
+Between July and November 2024 twelve patients treated at LMU University Hospital were included in the study.
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: Patient characteristics
+#| tbl-cap: Patients characteristics on admission to the intensive care unit.
+
+plot_baron_default
+```
+
+## Dialysate samples
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: Number of samples
+#| tbl-cap: Number of samples in each catergory that were collected during dense sampling.
+
+plot_baron_hmax
+```
