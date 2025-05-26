@@ -1,5 +1,5 @@
 ---
-title: "Calculating pk parameters in MRGsolve"
+title: "A problem in calculating pharmacokinetic parameters in MRGsolve"
 author: "Johannes Starp"
 format:
   html:
@@ -13,7 +13,15 @@ bibliography: references.bib
 
 # Introduction
 
-The aim of this project is to calculate pharmacokinetik (PK) parameters with the R package "MRGsolve". By adding code snippets to the model code as described in the MRGsolve blog [@baron2024].
+The calculation of pharmacokinetic (PK) parameters can be achieved by incorporating code snippets into the model code using the R package "MRGsolve", as outlined in the MRGsolve blog [@baron2024a]. The PK parameters of interest are:
+
+-   Area under the concentration time curve (AUC)
+
+-   Maximum concentration (c~max~)
+
+-   Time of maximum concentration (t~max~)
+
+It was observed that there was a divergence between the concentration-time curve graph and the curve graph in the ascending part of the plot when the default simulation settings were utilised. Moreover, it has been determined that c~max~ is not outputted correctly in certain settings. The resolution to this issue can be achieved through the adjustment of the solver settings. However, this is merely a workaround, as the user guide states that "hmax" should not be used regularly [@baron2024b]. The purpose of this document is twofold: firstly, to provide a detailed description of the problem; and secondly, to generate hypotheses on the causative factors of the problem.
 
 ```{r}
 #| echo: false
@@ -25,28 +33,64 @@ source("00_run_scripts.r")
 
 # Methods
 
+The scripts for reproducing the described problem can be accessed under <https://github.com/JohannesStarp/mrgsolve_pk_parameters>. The different simulations were adjusted by adjusting the solver settings.
+
+``` r
+mod_run007_hmax <- update(mod_run007_default, hmax = 0.001)
+```
+
+Two different population pharmacokinetic models were used for the simulations. The two-compartment model used in the blog post and a one-compartment model written for this example were employed. The drug was administered as a 200 mg oral dose (first compartment) and as an infusion (first compartment) to the two-compartment and one-compartment models, respectively.
+
 # Results
 
-## Patients
+The results show the plots of the concentration in the central compartment vs. the predicted c~max~. The results are stratified for the two models and the solver settings.
 
-Between July and November 2024 twelve patients treated at LMU University Hospital were included in the study.
+## Default settings
 
 ```{r}
 #| echo: false
 #| warning: false
-#| label: Patient characteristics
-#| tbl-cap: Patients characteristics on admission to the intensive care unit.
+#| label: plot two compartment default simulation
+#| fig-cap: Plot of concentraion [mg/L] in the central compartment vs. prediction of maximum concentration [mg/L] for the two compartment model and oral administration of 200 mg. The solver settings were set to default.
 
 plot_baron_default
 ```
 
-## Dialysate samples
+```{r}
+#| echo: false
+#| warning: false
+#| label: plot one compartment default simulation
+#| fig-cap: Plot of concentraion [mg/L] in the central compartment vs. prediction of maximum concentration [mg/L] for the one compartment model and oral administration of 200 mg. The solver settings were set to default.
+
+plot_run_007_default
+```
+
+When the step size is not limited, the c~max~ plot shows a 'stepwise' increase before the central compartment concentration reaches c~max~. This increase appears to be proportional to the steepness of the graph, which is most evident in the two-compartment model with the default settings. In the plot showing the infusion to the first compartment of the other model, the C~max~ is higher than the concentration in the central compartment.
+
+## Adjusted solver settings
 
 ```{r}
 #| echo: false
 #| warning: false
-#| label: Number of samples
-#| tbl-cap: Number of samples in each catergory that were collected during dense sampling.
+#| label: plot two compartment hmax setting
+#| fig-cap: Plot of concentraion [mg/L] in the central compartment vs. prediction of maximum concentration [mg/L] for the two compartment model and oral administration of 200 mg. The solver settings were adapted using "hmax".
 
 plot_baron_hmax
 ```
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: plot one compartment hmax setting
+#| fig-cap: Plot of concentraion [mg/L] in the central compartment vs. prediction of maximum concentration [mg/L] for the one compartment model and oral administration of 200 mg. The solver settings were adapted using "hmax".
+
+plot_run_007_hmax
+```
+
+When the solver settings are adjusted by limiting 'hmax', both graphs show overlap in the ascending phase (absorption/infusion phase) and the C~max~ is correctly predicted.
+
+# Discussion
+
+As the degree to which the concentration and c~max~ curves deviate from each other appears to depend on the steepness of the concentration, and as the entire problem can be solved by adjusting the solver settings, the manner in which the ordinary differential equations (ODE) are solved during the simulation could explain the phenomenon. When adjusting the step size for the ODE solver, it is likely that higher concentrations are used in the \$DES block, which are then saved as C~max~ and are not readjusted when a finer step size is used to calculate the concentrations in the central compartment.
+
+Further work could therefore focus on implementing the calculation of C~max~ and T~max~ using MRGsolve without adjusting the solver settings, as this could lead to increased run times.
