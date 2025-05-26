@@ -15,27 +15,24 @@
 # simulation model run007
 #creating tibble for short infusion
 sim_run007_default_df <- sim_run007_default@data |> 
-  mutate(dose = case_when(dose > 0 ~ dose)) |> 
-  group_by(ID) |> 
-  fill(dose) |> 
-  mutate(dose = case_when(time == 0 ~ NA,
-                          time != 0 ~ dose)) |> 
-  fill(dose, .direction = "up") |> 
-  ungroup() |> 
-  mutate(administration = "short")
+  pivot_longer(cols = c(C1, CMAX, TMAX),
+               names_to = "parameter",
+               values_to = "value")
 
 sim_run007_hmax_df <- sim_run007_hmax@data |> 
-  mutate(dose = case_when(dose > 0 ~ dose)) |> 
-  group_by(ID) |> 
-  fill(dose) |> 
-  mutate(dose = case_when(time == 0 ~ NA,
-                          time != 0 ~ dose)) |> 
-  fill(dose, .direction = "up") |> 
-  ungroup() |> 
-  mutate(administration = "short")
+  pivot_longer(cols = c(C1, CMAX, TMAX),
+               names_to = "parameter",
+               values_to = "value")
 
 # simulation model baron
-sim_baron_default_df <- sim_baron_default@data
-sim_baron_hmax_df <- sim_baron_hmax@data
+sim_baron_default_df <- sim_baron_default@data |> 
+  pivot_longer(cols = c(CP, Cmax),
+               names_to = "parameter",
+               values_to = "value")
+
+sim_baron_hmax_df <- sim_baron_hmax@data |> 
+  pivot_longer(cols = c(CP, Cmax),
+               names_to = "parameter",
+               values_to = "value")
 
 
