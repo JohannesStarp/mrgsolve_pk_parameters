@@ -12,6 +12,8 @@
 ##
 ## SETUP ---------------------------------------------
 
+# set seed
+set.seed(1234)
 
 # model import run007.cpp
 mod_run007_default <- mread("raw_data/run007.cpp")
