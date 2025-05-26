@@ -15,44 +15,30 @@
 # simulation model run007
 # Plotting the simulation results
 plot_run_007_default <- sim_run007_default_df |> 
-  filter(dose == 200) |> 
+  filter(parameter == "C1" | parameter == "CMAX") |>
   ggplot(aes(x = time)) +
-  geom_line(aes(y = C1)) +
-  # geom_line(aes(y = AUC), color = "red") +
-  # geom_line(aes(y = TMAX), color = "blue") +
-  geom_line(aes(y = CMAX), color = "red") +
-  facet_wrap(~ID) +
+  geom_line(aes(y = value, colour = parameter)) +
   # naming of the axes
   labs(x = "Time (h)", y = "Concentration (mg/L)")
 
 plot_run_007_hmax <- sim_run007_hmax_df |> 
-  filter(dose == 200) |> 
+  filter(parameter == "C1" | parameter == "CMAX") |>
   ggplot(aes(x = time)) +
-  geom_line(aes(y = C1)) +
-  # geom_line(aes(y = AUC), color = "red") +
-  # geom_line(aes(y = TMAX), color = "blue") +
-  geom_line(aes(y = CMAX), color = "red") +
-  facet_wrap(~ID) +
+  geom_line(aes(y = value, colour = parameter)) +
   # naming of the axes
   labs(x = "Time (h)", y = "Concentration (mg/L)")
 
 # simulation model baron
 plot_baron_default <- sim_baron_default_df |> 
+  filter(parameter == "CP" | parameter == "Cmax") |>
   ggplot(aes(x = time)) +
-  geom_line(aes(y = CP)) +
-  # geom_line(aes(y = AUC), color = "red") +
-  # geom_line(aes(y = TMAX), color = "blue") +
-  geom_line(aes(y = Cmax), color = "red") +
-  facet_wrap(~ID) +
+  geom_line(aes(y = value, colour = parameter)) +
   # naming of the axes
   labs(x = "Time (h)", y = "Concentration (mg/L)")
 
 plot_baron_hmax <- sim_baron_hmax_df |> 
+  filter(parameter == "CP" | parameter == "Cmax") |>
   ggplot(aes(x = time)) +
-  geom_line(aes(y = CP)) +
-  # geom_line(aes(y = AUC), color = "red") +
-  # geom_line(aes(y = TMAX), color = "blue") +
-  geom_line(aes(y = Cmax), color = "red") +
-  facet_wrap(~ID) +
+  geom_line(aes(y = value, colour = parameter)) +
   # naming of the axes
   labs(x = "Time (h)", y = "Concentration (mg/L)")
