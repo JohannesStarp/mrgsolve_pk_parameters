@@ -1,6 +1,8 @@
 # PK Parameter Calculation Issue in MRGsolve
 
-This repository investigates inaccuracies in calculating pharmacokinetic (PK) parameters—especially `cmax` and `tmax`—using [MRGsolve](https://mrgsolve.github.io/) with default solver settings.
+This repository investigates inaccuracies in calculating pharmacokinetic (PK) parameters—especially `cmax` and `tmax` - using [MRGsolve](https://mrgsolve.github.io/) with default solver settings.
+
+The whole topic is related to this blog [post](https://mrgsolve.org/blog/posts/true-cmax.html) and discussed [here](https://github.com/metrumresearchgroup/mrgsolve/discussions/1284#discussioncomment-13480801).
 
 ## Summary
 
